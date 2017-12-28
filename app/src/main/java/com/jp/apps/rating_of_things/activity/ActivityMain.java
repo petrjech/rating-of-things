@@ -1,12 +1,18 @@
-package com.jp.apps.rating_of_things.com.jp.apps.rating_of_things.activity;
+package com.jp.apps.rating_of_things.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import com.jp.apps.rating_of_things.Config;
+import com.jp.apps.rating_of_things.Item;
 import com.jp.apps.rating_of_things.R;
+import com.jp.apps.rating_of_things.dao.ItemDao;
+
+import java.util.List;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -16,6 +22,18 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ItemDao itemDao = Config.getDefaultItemDao(this);
+        List<Item> items = itemDao.getAllItems();
+        String text = "";
+        for (Item item : items) {
+            text += item.getName() + "\n";
+        }
+        if (items.size() == 0) {
+            text = "no items";
+        }
+        TextView tw = (TextView) findViewById(R.id.testView);
+        tw.setText(text);
     }
 
     @Override

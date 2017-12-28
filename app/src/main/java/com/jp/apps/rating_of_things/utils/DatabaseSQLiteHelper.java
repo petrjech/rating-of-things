@@ -1,4 +1,4 @@
-package com.jp.apps.rating_of_things.com.jp.apps.rating_of_things.utils;
+package com.jp.apps.rating_of_things.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -54,10 +54,10 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        createTableItems();
-        createTableRatings();
-        createTableTags();
-        createTableItemTags();
+        database.execSQL(createTableItems());
+        database.execSQL(createTableRatings());
+        database.execSQL(createTableTags());
+        database.execSQL(createTableItemTags());
     }
 
      @Override
@@ -93,12 +93,13 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
     }
 
     private static String createTableItemTags(){
-        return "CREATE TABLE " + TABLES.RATINGS.name() + "("
+        return "CREATE TABLE " + TABLES.ITEM_TAGS.name() + "("
                 + ITEM_TAGS_COLUMNS.ID.name()  + " INTEGER NOT NULL,"
                 + ITEM_TAGS_COLUMNS.ITEM_ID.name()      + " TEXT NOT NULL,"
                 + ITEM_TAGS_COLUMNS.TAG_ID.name() + " TEXT NOT NULL,"
                 + " FOREIGN KEY(" + ITEM_TAGS_COLUMNS.ITEM_ID.name() + ") REFERENCES ITEMS(" + ITEMS_COLUMNS.ID.name() + "),"
-                + " FOREIGN KEY(" + ITEM_TAGS_COLUMNS.TAG_ID.name() + ") REFERENCES ITEMS(" + TAGS_COLUMNS.ID.name() + ")"
+                + " FOREIGN KEY(" + ITEM_TAGS_COLUMNS.TAG_ID.name() + ") REFERENCES ITEMS(" + TAGS_COLUMNS.ID.name() + "),"
+                + " UNIQUE (" +ITEM_TAGS_COLUMNS.ITEM_ID.name() + ", " + ITEM_TAGS_COLUMNS.TAG_ID.name() + ") ON CONFLICT REPLACE"
                 + ");";
     }
 

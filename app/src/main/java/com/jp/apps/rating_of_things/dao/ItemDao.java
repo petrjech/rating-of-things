@@ -1,4 +1,4 @@
-package com.jp.apps.rating_of_things.com.jp.apps.rating_of_things.dao;
+package com.jp.apps.rating_of_things.dao;
 
 import com.jp.apps.rating_of_things.Item;
 
