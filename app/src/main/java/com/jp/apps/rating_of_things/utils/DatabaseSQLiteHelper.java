@@ -70,7 +70,7 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
         return "CREATE TABLE " + TABLES.ITEMS.name() +"("
                 + ITEMS_COLUMNS.ID.name()      + " INTEGER PRIMARY KEY ASC,"
                 + ITEMS_COLUMNS.NAME.name()          + " TEXT NOT NULL,"
-                + ITEMS_COLUMNS.DESCRIPTION.name()   + " TEXT NOT NULL,"
+                + ITEMS_COLUMNS.DESCRIPTION.name()   + " TEXT NOT NULL"
                 + ");";
     }
 
@@ -88,7 +88,7 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
     private static String createTableTags(){
         return "CREATE TABLE " + TABLES.TAGS.name() +"("
                 + TAGS_COLUMNS.ID.name()      + " INTEGER PRIMARY KEY ASC,"
-                + TAGS_COLUMNS.NAME.name()          + " TEXT NOT NULL,"
+                + TAGS_COLUMNS.NAME.name()          + " TEXT NOT NULL"
                 + ");";
     }
 
