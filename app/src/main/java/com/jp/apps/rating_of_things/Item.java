@@ -1,5 +1,7 @@
 package com.jp.apps.rating_of_things;
 
+import android.content.Intent;
+
 import java.util.List;
 
 public class Item {
@@ -8,7 +10,7 @@ public class Item {
     private String name;
     private List<Rating> ratings;
     private List<String> tags;
-    private String description;
+    private String description = "";
 
     public Item (String name) {
         this.name = name;
@@ -52,5 +54,18 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void populateIntent(Intent intent) {
+        intent.putExtra("id", id);
+        intent.putExtra("name", name);
+        intent.putExtra("description", description);
+    }
+
+    public static Item createFromIntent(Intent intent) {
+        Item item = new Item(intent.getStringExtra("name"));
+        item.setId(intent.getIntExtra("id", 0));
+        item.setDescription(intent.getStringExtra("description"));
+        return item;
     }
 }

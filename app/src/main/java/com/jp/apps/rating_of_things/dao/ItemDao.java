@@ -6,11 +6,15 @@ import java.util.List;
 
 public interface ItemDao {
 
-    long addItem(Item item);
+    long createItem(Item item);
 
     boolean updateItem(Item item);
 
-    boolean deleteEvent(Item item);
+    boolean deleteItem(Item item);
+
+    boolean itemExists(String itemName);
+
+    List<Item> searchItems(String name, List<String> includingTags, List<String> excludingTags);
 
     List<Item> getAllItems();
 }

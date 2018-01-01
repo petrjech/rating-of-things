@@ -1,39 +1,58 @@
 package com.jp.apps.rating_of_things.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.jp.apps.rating_of_things.Config;
 import com.jp.apps.rating_of_things.Item;
+import com.jp.apps.rating_of_things.ItemListAdapter;
 import com.jp.apps.rating_of_things.R;
 import com.jp.apps.rating_of_things.dao.ItemDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityMain extends AppCompatActivity {
+
+    private ItemListAdapter itemListAdapter;
+    private final ArrayList<Item> searchItemsResult = new ArrayList<>();
+    private String searchItemCache = "";
+
+    private static final int OPEN_ITEM_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ItemDao itemDao = Config.getDefaultItemDao(this);
-        List<Item> items = itemDao.getAllItems();
-        String text = "";
-        for (Item item : items) {
-            text += item.getName() + "\n";
-        }
-        if (items.size() == 0) {
-            text = "no items";
-        }
-        TextView tw = (TextView) findViewById(R.id.testView);
-        tw.setText(text);
+        itemListAdapter = new ItemListAdapter(this, searchItemsResult);
+
+        ListView search_items_result_list = findViewById(R.id.search_items_result_list);
+        search_items_result_list.setAdapter(itemListAdapter);
+
+        search_items_result_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item item = (Item) parent.getItemAtPosition(position);
+                openItemActivity(item);
+            }
+        });
+
+        EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+        search_input_widget.addTextChangedListener(searchItemWatcher);
     }
 
     @Override
@@ -57,4 +76,78 @@ public class ActivityMain extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void createItem(@SuppressWarnings("UnusedParameters") View view) {
+        EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+        String itemName = search_input_widget.getText().toString().trim();
+        if (itemName.isEmpty()) {
+            Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.activity_main_create_item_empty), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+            return;
+        }
+
+        ItemDao itemDao = Config.getDefaultItemDao(this);
+        boolean itemExists = itemDao.itemExists(itemName);
+        if (itemExists) {
+            Toast toast = Toast.makeText(getApplicationContext(), itemName + " " + getString(R.string.activity_main_item_exists), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+            return;
+        }
+        Item item = new Item(itemName);
+        item.setId(itemDao.createItem(item));
+        openItemActivity(item);
+    }
+
+
+    private void openItemActivity(Item item) {
+        Intent intent = new Intent(getBaseContext(), ActivityItem.class);
+        item.populateIntent(intent);
+        startActivityForResult(intent, OPEN_ITEM_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == OPEN_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+                search_input_widget.setText("");
+            }
+        }
+    }
+
+
+    private final TextWatcher searchItemWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable searchItemString) {
+            String search = searchItemString.toString().trim();
+            if (search.equals(searchItemCache)) return;
+
+            if (search.length() == 0) {
+                searchItemString.clear();
+                searchItemCache = "";
+                itemListAdapter.notifyDataSetChanged();
+                return;
+            }
+            searchItemCache = search;
+            ItemDao itemDao = Config.getDefaultItemDao(getApplicationContext());
+            List<String> includingTags = new ArrayList<>();
+            List<String> excludingTags = new ArrayList<>();
+            List<Item> items = itemDao.searchItems(search, includingTags, excludingTags);
+            searchItemsResult.clear();
+            searchItemsResult.addAll(items);
+            itemListAdapter.notifyDataSetChanged();
+        }
+    };
 }
