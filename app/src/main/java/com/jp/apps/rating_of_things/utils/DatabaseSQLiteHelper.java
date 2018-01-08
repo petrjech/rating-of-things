@@ -54,6 +54,10 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE ITEMS");
+        database.execSQL("DROP TABLE RATINGS");
+        database.execSQL("DROP TABLE TAGS");
+        database.execSQL("DROP TABLE ITEM_TAGS");
         database.execSQL(createTableItems());
         database.execSQL(createTableRatings());
         database.execSQL(createTableTags());
@@ -76,8 +80,8 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
     private static String createTableRatings(){
         return "CREATE TABLE " + TABLES.RATINGS.name() + "("
-                + RATINGS_COLUMNS.ID.name()  + " INTEGER NOT NULL,"
-                + RATINGS_COLUMNS.ITEM_ID.name()      + " TEXT NOT NULL,"
+                + RATINGS_COLUMNS.ID.name()  + " INTEGER PRIMARY KEY ASC,"
+                + RATINGS_COLUMNS.ITEM_ID.name()      + " INTEGER NOT NULL,"
                 + RATINGS_COLUMNS.DATE.name() + " TEXT NOT NULL,"
                 + RATINGS_COLUMNS.RATING.name() + " INTEGER NOT NULL,"
                 + RATINGS_COLUMNS.NOTE.name() + " TEXT NOT NULL,"
@@ -94,9 +98,9 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
     private static String createTableItemTags(){
         return "CREATE TABLE " + TABLES.ITEM_TAGS.name() + "("
-                + ITEM_TAGS_COLUMNS.ID.name()  + " INTEGER NOT NULL,"
-                + ITEM_TAGS_COLUMNS.ITEM_ID.name()      + " TEXT NOT NULL,"
-                + ITEM_TAGS_COLUMNS.TAG_ID.name() + " TEXT NOT NULL,"
+                + ITEM_TAGS_COLUMNS.ID.name()  + " INTEGER PRIMARY KEY ASC,"
+                + ITEM_TAGS_COLUMNS.ITEM_ID.name()      + " INTEGER NOT NULL,"
+                + ITEM_TAGS_COLUMNS.TAG_ID.name() + " INTEGER NOT NULL,"
                 + " FOREIGN KEY(" + ITEM_TAGS_COLUMNS.ITEM_ID.name() + ") REFERENCES ITEMS(" + ITEMS_COLUMNS.ID.name() + "),"
                 + " FOREIGN KEY(" + ITEM_TAGS_COLUMNS.TAG_ID.name() + ") REFERENCES ITEMS(" + TAGS_COLUMNS.ID.name() + "),"
                 + " UNIQUE (" +ITEM_TAGS_COLUMNS.ITEM_ID.name() + ", " + ITEM_TAGS_COLUMNS.TAG_ID.name() + ") ON CONFLICT REPLACE"

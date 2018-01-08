@@ -1,5 +1,6 @@
 package com.jp.apps.rating_of_things.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +20,7 @@ import com.jp.apps.rating_of_things.Config;
 import com.jp.apps.rating_of_things.Item;
 import com.jp.apps.rating_of_things.ItemListAdapter;
 import com.jp.apps.rating_of_things.R;
-import com.jp.apps.rating_of_things.dao.ItemDao;
+import com.jp.apps.rating_of_things.dao.Dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ActivityMain extends AppCompatActivity {
     private ItemListAdapter itemListAdapter;
     private final ArrayList<Item> searchItemsResult = new ArrayList<>();
     private String searchItemCache = "";
+    private Dao dao;
 
     private static final int OPEN_ITEM_REQUEST = 1;
 
@@ -36,12 +38,14 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        initialize();
 
         itemListAdapter = new ItemListAdapter(this, searchItemsResult);
 
-        ListView search_items_result_list = findViewById(R.id.search_items_result_list);
+        ListView search_items_result_list = (ListView) findViewById(R.id.search_items_result_list);
         search_items_result_list.setAdapter(itemListAdapter);
 
         search_items_result_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,7 +55,7 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+        EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
         search_input_widget.addTextChangedListener(searchItemWatcher);
     }
 
@@ -77,8 +81,13 @@ public class ActivityMain extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void initialize() {
+        Context applicationContext = this.getApplicationContext();
+        dao = Config.initializeDefaultDao(applicationContext);
+    }
+
     public void createItem(@SuppressWarnings("UnusedParameters") View view) {
-        EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+        EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
         String itemName = search_input_widget.getText().toString().trim();
         if (itemName.isEmpty()) {
             Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.activity_main_create_item_empty), Toast.LENGTH_SHORT);
@@ -87,8 +96,7 @@ public class ActivityMain extends AppCompatActivity {
             return;
         }
 
-        ItemDao itemDao = Config.getDefaultItemDao(this);
-        boolean itemExists = itemDao.itemExists(itemName);
+        boolean itemExists = dao.itemExists(itemName);
         if (itemExists) {
             Toast toast = Toast.makeText(getApplicationContext(), itemName + " " + getString(R.string.activity_main_item_exists), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 0);
@@ -96,7 +104,7 @@ public class ActivityMain extends AppCompatActivity {
             return;
         }
         Item item = new Item(itemName);
-        item.setId(itemDao.createItem(item));
+        item.setId(dao.createItem(item));
         openItemActivity(item);
     }
 
@@ -111,7 +119,7 @@ public class ActivityMain extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OPEN_ITEM_REQUEST) {
             if (resultCode == RESULT_OK) {
-                EditText search_input_widget = findViewById(R.id.activity_main_search_input);
+                EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
                 search_input_widget.setText("");
             }
         }
@@ -141,10 +149,9 @@ public class ActivityMain extends AppCompatActivity {
                 return;
             }
             searchItemCache = search;
-            ItemDao itemDao = Config.getDefaultItemDao(getApplicationContext());
             List<String> includingTags = new ArrayList<>();
             List<String> excludingTags = new ArrayList<>();
-            List<Item> items = itemDao.searchItems(search, includingTags, excludingTags);
+            List<Item> items = dao.searchItems(search, includingTags, excludingTags);
             searchItemsResult.clear();
             searchItemsResult.addAll(items);
             itemListAdapter.notifyDataSetChanged();
