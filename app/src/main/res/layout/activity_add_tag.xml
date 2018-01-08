@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jp.apps.rating_of_things.activity.ActivityItem">
+    tools:context="com.jp.apps.rating_of_things.activity.ActivityAddTag">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -31,19 +31,14 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activity.ActivityItem"
-        tools:showIn="@layout/activity_item">
+        tools:context=".activity.ActivityAddTag"
+        tools:showIn="@layout/activity_add_tag">
 
-        <TextView
-            android:id="@+id/activity_item_test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="addTag"
-            android:text="@string/activity_item_add_tag_button" />
+    <TextView
+        android:id="@+id/activity_add_tag_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="asdflkasd"/>
 
     </LinearLayout>
 

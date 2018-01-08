@@ -18,7 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ActivityItem"></activity>
+        <activity android:name=".activity.ActivityItem" />
+        <activity
+            android:name=".activity.ActivityAddTag"
+            android:label="@string/activity_add_tag_title"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
