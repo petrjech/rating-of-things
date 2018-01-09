@@ -82,14 +82,32 @@ public class DaoImpl implements Dao {
 
     @Override
     public List<Item> searchItems(String itemName, List<String> includingTags, List<String> excludingTags) {
-        // TODO implement
+        // TODO implement search including tags
         List<Item> result = new ArrayList<>();
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(TABLES.ITEMS.name(), itemsColumns, ITEMS_COLUMNS.NAME.name() + " LIKE ?", new String[] {itemName + "%"}, null, null, null, "1");
+        Cursor cursor = db.query(TABLES.ITEMS.name(), itemsColumns, ITEMS_COLUMNS.NAME.name() + " LIKE ?", new String[] {itemName + "%"}, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             result.add(cursorToItem(cursor));
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        db.close();
+
+        return result;
+    }
+
+    @Override
+    public List<Tag> searchTags(String name) {
+        List<Tag> result = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLES.TAGS.name(), tagsColumns, TAGS_COLUMNS.NAME.name() + " LIKE ?", new String[] {name + "%"}, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            result.add(cursorToTag(cursor));
             cursor.moveToNext();
         }
 

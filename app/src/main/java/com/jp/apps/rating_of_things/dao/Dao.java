@@ -17,6 +17,8 @@ public interface Dao {
 
     List<Item> searchItems(String name, List<String> includingTags, List<String> excludingTags);
 
+    List<Tag> searchTags(String name);
+
     List<Item> getAllItems();
 
     List<Tag> getAllTags();

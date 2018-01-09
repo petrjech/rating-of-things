@@ -32,6 +32,8 @@ public class ActivityMain extends AppCompatActivity {
     private String searchItemCache = "";
     private Dao dao;
 
+    public static Item selectedItem;
+
     private static final int OPEN_ITEM_REQUEST = 1;
 
     @Override
@@ -50,8 +52,8 @@ public class ActivityMain extends AppCompatActivity {
 
         search_items_result_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Item item = (Item) parent.getItemAtPosition(position);
-                openItemActivity(item);
+                selectedItem = (Item) parent.getItemAtPosition(position);
+                openItemActivity();
             }
         });
 
@@ -103,21 +105,21 @@ public class ActivityMain extends AppCompatActivity {
             toast.show();
             return;
         }
-        Item item = new Item(itemName);
-        item.setId(dao.createItem(item));
-        openItemActivity(item);
+        selectedItem = new Item(itemName);
+        selectedItem.setId(dao.createItem(selectedItem));
+        openItemActivity();
     }
 
 
-    private void openItemActivity(Item item) {
-        Intent intent = new Intent(getBaseContext(), ActivityItem.class);
-        item.populateIntent(intent);
+    private void openItemActivity() {
+        Intent intent = new Intent(this, ActivityItem.class);
         startActivityForResult(intent, OPEN_ITEM_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OPEN_ITEM_REQUEST) {
+            selectedItem = null;
             if (resultCode == RESULT_OK) {
                 EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
                 search_input_widget.setText("");

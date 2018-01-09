@@ -9,7 +9,7 @@ public class Item {
     private long id;
     private String name;
     private List<Rating> ratings;
-    private List<String> tags;
+    private List<Tag> tags;
     private String description = "";
 
     public Item (String name) {
@@ -40,11 +40,11 @@ public class Item {
         this.ratings = ratings;
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 

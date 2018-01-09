@@ -18,11 +18,11 @@ import com.jp.apps.rating_of_things.dao.Dao;
 
 import java.util.List;
 
+import static com.jp.apps.rating_of_things.activity.ActivityMain.selectedItem;
+
 public class ActivityItem extends AppCompatActivity {
 
     private Dao dao;
-    private Item item;
-    private List<Tag> itemTags;
 
     private static final int OPEN_ADD_TAG_REQUEST = 1;
 
@@ -33,24 +33,21 @@ public class ActivityItem extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-        item = Item.createFromIntent(intent);
-
         dao = Config.getDefaultDao();
-        itemTags = dao.getItemTags(item);
+        selectedItem.setTags(dao.getItemTags(selectedItem));
 
-        setTitle(item.getName());
+        setTitle(selectedItem.getName());
 
         TextView tv = (TextView) findViewById(R.id.activity_item_test);
-        String text = item.getName() + "\n";
-        text += item.getName() + "\n";
-        text += item.getName() + "\n";
-        text += item.getName() + "\n";
-        if (itemTags.isEmpty()) {
+        String text = selectedItem.getName() + "\n";
+        text += selectedItem.getName() + "\n";
+        text += selectedItem.getName() + "\n";
+        text += selectedItem.getName() + "\n";
+        if (selectedItem.getTags().isEmpty()) {
             text += "Tags: no tags.";
         } else {
             text += "Tags: ";
-            for (Tag tag : itemTags) {
+            for (Tag tag : selectedItem.getTags()) {
                 text += tag.getName() + ", ";
             }
             text = text.substring(0, text.length() - 2);
@@ -81,14 +78,14 @@ public class ActivityItem extends AppCompatActivity {
     }
 
     public void addTag(View view) {
-        Intent intent = new Intent(getBaseContext(), ActivityAddTag.class);
-        item.populateIntent(intent);
+        Intent intent = new Intent(this, ActivityAddTag.class);
         startActivityForResult(intent, OPEN_ADD_TAG_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OPEN_ADD_TAG_REQUEST) {
+            // TODO refresh item tags view
             if (resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(getApplicationContext(),"tag added..", Toast.LENGTH_SHORT);
                 toast.show();
