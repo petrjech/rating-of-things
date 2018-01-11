@@ -34,27 +34,19 @@
         tools:context=".activity.ActivityAddTag"
         tools:showIn="@layout/activity_add_tag">
 
+        <EditText
+            android:id="@+id/activity_add_tag_search_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text">
+            <requestFocus/>
+        </EditText>
+
         <TextView
             android:id="@+id/activity_add_tag_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="asdflkasd"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/activity_add_tag_search_input"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="text">
-                <requestFocus/>
-            </EditText>
-
-        </LinearLayout>
 
         <ListView
             android:id="@+id/search_tags_result_list"
