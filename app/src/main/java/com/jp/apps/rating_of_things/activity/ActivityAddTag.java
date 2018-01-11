@@ -1,18 +1,19 @@
 package com.jp.apps.rating_of_things.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jp.apps.rating_of_things.Config;
 import com.jp.apps.rating_of_things.R;
@@ -84,11 +85,23 @@ public class ActivityAddTag extends AppCompatActivity {
     }
 
     private void addTag(Tag tag) {
-        //TODO implement
+        selectedItem.getTags().add(tag);
+        //TODO save to item-tag table
+        populateTags();
     }
 
     private void populateTags() {
-        //TODO implement
+        TextView tagsView = (TextView) findViewById(R.id.activity_add_tag_tags);
+        if (selectedItem.getTags().isEmpty()) {
+            tagsView.setText(getString(R.string.activity_add_tag_tags_empty));
+        } else {
+            String text = "";
+            for (Tag tag : selectedItem.getTags()) {
+                text += tag.getName() + ", ";
+            }
+            text = text.substring(0, text.length() - 2) + ".";
+            tagsView.setText(text);
+        }
     }
 
     private final TextWatcher searchTagWatcher = new TextWatcher() {
@@ -120,4 +133,27 @@ public class ActivityAddTag extends AppCompatActivity {
             tagListAdapter.notifyDataSetChanged();
         }
     };
+
+    public void createTag(View view) {
+        EditText search_input_widget = (EditText) findViewById(R.id.activity_add_tag_search_input);
+        String tagName = search_input_widget.getText().toString().trim();
+        if (tagName.isEmpty()) {
+            Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.activity_add_tag_create_tag_empty), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+            return;
+        }
+
+        boolean tagExists = dao.tagExists(tagName);
+        if (tagExists) {
+            Toast toast = Toast.makeText(getApplicationContext(), tagName + " " + getString(R.string.activity_add_tag_exists), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+            return;
+        }
+        Tag tag = new Tag(tagName);
+        tag.setId(dao.createTag(tag));
+        search_input_widget.setText("");
+        addTag(tag);
+    }
 }

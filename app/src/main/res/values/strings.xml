@@ -7,4 +7,8 @@
     <string name="activity_main_item_exists">Item already exists.</string>
     <string name="activity_add_tag_title">"Add Tag for: "</string>
     <string name="activity_item_add_tag_button">Add</string>
+    <string name="activity_add_tag_create_button">Add</string>
+    <string name="activity_add_tag_create_tag_empty">Please, provide a name for a new Tag.</string>
+    <string name="activity_add_tag_exists">Tag already exists.</string>
+    <string name="activity_add_tag_tags_empty">No Tags.</string>
 </resources>

@@ -15,6 +15,8 @@ public interface Dao {
 
     boolean itemExists(String itemName);
 
+    boolean tagExists(String tagName);
+
     List<Item> searchItems(String name, List<String> includingTags, List<String> excludingTags);
 
     List<Tag> searchTags(String name);

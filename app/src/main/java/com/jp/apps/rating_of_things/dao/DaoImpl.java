@@ -62,6 +62,17 @@ public class DaoImpl implements Dao {
     }
 
     @Override
+    public boolean tagExists(String tagName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLES.TAGS.name(), tagsColumns, TAGS_COLUMNS.NAME.name() + " = ?", new String[] {tagName}, null, null, null, "1");
+        cursor.moveToFirst();
+        boolean result = !cursor.isAfterLast();
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    @Override
     public List<Item> getAllItems() {
         List<Item> result = new ArrayList<>();
 
