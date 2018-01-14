@@ -37,22 +37,7 @@ public class ActivityItem extends AppCompatActivity {
         selectedItem.setTags(dao.getItemTags(selectedItem));
 
         setTitle(selectedItem.getName());
-
-        TextView tv = (TextView) findViewById(R.id.activity_item_test);
-        String text = selectedItem.getName() + "\n";
-        text += selectedItem.getName() + "\n";
-        text += selectedItem.getName() + "\n";
-        text += selectedItem.getName() + "\n";
-        if (selectedItem.getTags().isEmpty()) {
-            text += "Tags: no tags.";
-        } else {
-            text += "Tags: ";
-            for (Tag tag : selectedItem.getTags()) {
-                text += tag.getName() + ", ";
-            }
-            text = text.substring(0, text.length() - 2);
-        }
-        tv.setText(text);
+        populateTags();
     }
 
     @Override
@@ -85,11 +70,22 @@ public class ActivityItem extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OPEN_ADD_TAG_REQUEST) {
-            // TODO refresh item tags view
-            if (resultCode == RESULT_OK) {
-                Toast toast = Toast.makeText(getApplicationContext(),"tag added..", Toast.LENGTH_SHORT);
-                toast.show();
-            }
+            populateTags();
         }
+    }
+
+    private void populateTags() {
+        TextView tv = (TextView) findViewById(R.id.activity_item_test);
+        String text = "";
+        if (selectedItem.getTags().isEmpty()) {
+            text += "Tags: no tags.";
+        } else {
+            text += "Tags: ";
+            for (Tag tag : selectedItem.getTags()) {
+                text += tag.getName() + ", ";
+            }
+            text = text.substring(0, text.length() - 2);
+        }
+        tv.setText(text);
     }
 }

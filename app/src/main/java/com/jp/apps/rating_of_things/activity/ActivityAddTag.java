@@ -86,7 +86,12 @@ public class ActivityAddTag extends AppCompatActivity {
 
     private void addTag(Tag tag) {
         selectedItem.getTags().add(tag);
-        //TODO save to item-tag table
+        boolean success = dao.addItemTag(selectedItem, tag);
+        if (!success) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Add tag to this item failed.", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+        }
         populateTags();
     }
 

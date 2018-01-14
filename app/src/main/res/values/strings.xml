@@ -2,7 +2,6 @@
     <string name="app_name">Rating of Things</string>
     <string name="app_label">My Ratings</string>
     <string name="action_settings">Settings</string>
-    <string name="activity_main_add_item_button">Create</string>
     <string name="activity_main_create_item_empty">Please, provide a name for a new Item.</string>
     <string name="activity_main_item_exists">Item already exists.</string>
     <string name="activity_add_tag_title">"Add Tag for: "</string>

@@ -161,7 +161,7 @@ public class DaoImpl implements Dao {
                 + TABLES.ITEM_TAGS.name() + "." + ITEM_TAGS_COLUMNS.TAG_ID.name()
                 + " = "
                 + TABLES.TAGS.name() + "." + TAGS_COLUMNS.ID.name());
-        queryBuilder.appendWhereEscapeString(ITEM_TAGS_COLUMNS.ITEM_ID.name() + " = " + item.getName());
+        queryBuilder.appendWhere(ITEM_TAGS_COLUMNS.ITEM_ID.name() + " = " + item.getId());
         String[] columns = new String[] {TABLES.TAGS.name() + "." + TAGS_COLUMNS.ID.name(), TABLES.TAGS.name() + "." + TAGS_COLUMNS.NAME.name()};
         Cursor cursor = queryBuilder.query(db, columns, null, null, null, null, null, null);
 
@@ -178,21 +178,32 @@ public class DaoImpl implements Dao {
     }
 
     @Override
-    public long createTag(Tag tag) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(ITEMS_COLUMNS.NAME.name(), tag.getName());
-        return db.insert(TABLES.TAGS.name(), null, cv);
-    }
-
-    @Override
     public boolean addItemTag(Item item, Tag tag) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(ITEM_TAGS_COLUMNS.ITEM_ID.name(), item.getId());
         cv.put(ITEM_TAGS_COLUMNS.TAG_ID.name(), tag.getId());
-        long id = db.insert(TABLES.ITEM_TAGS.name(), null, cv);
+        long id = -1;
+        try {
+            id = db.insertOrThrow(TABLES.ITEM_TAGS.name(), null, cv);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
         return id >= 0;
+    }
+
+    @Override
+    public boolean deleteItemTag(Item item, Tag tag) {
+        // TODO implement
+        return false;
+    }
+
+    @Override
+    public long createTag(Tag tag) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ITEMS_COLUMNS.NAME.name(), tag.getName());
+        return db.insert(TABLES.TAGS.name(), null, cv);
     }
 
     private Item cursorToItem(Cursor cursor) {

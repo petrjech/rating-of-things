@@ -27,7 +27,9 @@ public interface Dao {
 
     List<Tag> getItemTags(Item item);
 
-    long createTag(Tag tag);
-
     boolean addItemTag(Item item, Tag tag);
+
+    boolean deleteItemTag(Item item, Tag tag);
+
+    long createTag(Tag tag);
 }

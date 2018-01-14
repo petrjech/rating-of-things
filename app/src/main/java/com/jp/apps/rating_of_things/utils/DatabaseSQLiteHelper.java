@@ -54,10 +54,10 @@ public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL("DROP TABLE ITEMS");
-        database.execSQL("DROP TABLE RATINGS");
-        database.execSQL("DROP TABLE TAGS");
-        database.execSQL("DROP TABLE ITEM_TAGS");
+//        database.execSQL("DROP TABLE ITEMS");
+//        database.execSQL("DROP TABLE RATINGS");
+//        database.execSQL("DROP TABLE TAGS");
+//        database.execSQL("DROP TABLE ITEM_TAGS");
         database.execSQL(createTableItems());
         database.execSQL(createTableRatings());
         database.execSQL(createTableTags());

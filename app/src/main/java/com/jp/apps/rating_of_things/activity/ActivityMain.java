@@ -88,7 +88,7 @@ public class ActivityMain extends AppCompatActivity {
         dao = Config.initializeDefaultDao(applicationContext);
     }
 
-    public void createItem(@SuppressWarnings("UnusedParameters") View view) {
+    public void createItem() {
         EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
         String itemName = search_input_widget.getText().toString().trim();
         if (itemName.isEmpty()) {
@@ -110,6 +110,16 @@ public class ActivityMain extends AppCompatActivity {
         openItemActivity();
     }
 
+    public void clearButtonEvent(View view) {
+        EditText search_input_widget = (EditText) findViewById(R.id.activity_main_search_input);
+        search_input_widget.setText("");
+        searchItemsResult.clear();
+        itemListAdapter.notifyDataSetChanged();
+    }
+
+    public void addButtonEvent(View view) {
+        createItem();
+    }
 
     private void openItemActivity() {
         Intent intent = new Intent(this, ActivityItem.class);
@@ -146,16 +156,16 @@ public class ActivityMain extends AppCompatActivity {
 
             if (search.length() == 0) {
                 searchItemString.clear();
+                searchItemsResult.clear();
                 searchItemCache = "";
-                itemListAdapter.notifyDataSetChanged();
-                return;
+            } else {
+                searchItemCache = search;
+                List<String> includingTags = new ArrayList<>();
+                List<String> excludingTags = new ArrayList<>();
+                List<Item> items = dao.searchItems(search, includingTags, excludingTags);
+                searchItemsResult.clear();
+                searchItemsResult.addAll(items);
             }
-            searchItemCache = search;
-            List<String> includingTags = new ArrayList<>();
-            List<String> excludingTags = new ArrayList<>();
-            List<Item> items = dao.searchItems(search, includingTags, excludingTags);
-            searchItemsResult.clear();
-            searchItemsResult.addAll(items);
             itemListAdapter.notifyDataSetChanged();
         }
     };
