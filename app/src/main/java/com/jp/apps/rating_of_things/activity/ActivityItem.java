@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.jp.apps.rating_of_things.Config;
 import com.jp.apps.rating_of_things.Item;
 import com.jp.apps.rating_of_things.R;
@@ -75,17 +79,15 @@ public class ActivityItem extends AppCompatActivity {
     }
 
     private void populateTags() {
-        TextView tv = (TextView) findViewById(R.id.activity_item_test);
-        String text = "";
-        if (selectedItem.getTags().isEmpty()) {
-            text += "Tags: no tags.";
-        } else {
-            text += "Tags: ";
-            for (Tag tag : selectedItem.getTags()) {
-                text += tag.getName() + ", ";
+        FlexboxLayout container = findViewById(R.id.activity_item_tags);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        for (Tag tag : selectedItem.getTags()) {
+            for (int i = 0; i < 10; i++) {
+                TextView tagView = new TextView(new ContextThemeWrapper(this, R.style.TagView), null, 0);
+                tagView.setText(tag.getName());
+//            tagView.setLayoutParams(params);
+                container.addView(tagView);
             }
-            text = text.substring(0, text.length() - 2);
         }
-        tv.setText(text);
     }
 }
